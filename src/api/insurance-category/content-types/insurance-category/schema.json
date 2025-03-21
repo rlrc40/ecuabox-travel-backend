@@ -39,10 +39,7 @@
       "required": true
     },
     "image": {
-      "allowedTypes": [
-        "images",
-        "files"
-      ],
+      "allowedTypes": ["images", "files"],
       "type": "media",
       "multiple": false,
       "required": true
