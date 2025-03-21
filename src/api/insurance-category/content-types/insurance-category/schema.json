@@ -46,6 +46,18 @@
       "type": "media",
       "multiple": false,
       "required": true
+    },
+    "strech_of_days": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::strech-of-days.strech-of-days",
+      "mappedBy": "insurance_category"
+    },
+    "insurance": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::insurance.insurance",
+      "mappedBy": "insurance_category"
     }
   }
 }

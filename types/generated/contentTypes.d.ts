@@ -440,6 +440,10 @@ export interface ApiInsuranceCategoryInsuranceCategory
       }>;
     image: Schema.Attribute.Media<'images' | 'files'> &
       Schema.Attribute.Required;
+    insurance: Schema.Attribute.Relation<
+      'oneToOne',
+      'api::insurance.insurance'
+    >;
     locale: Schema.Attribute.String;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
@@ -454,6 +458,110 @@ export interface ApiInsuranceCategoryInsuranceCategory
       }>;
     publishedAt: Schema.Attribute.DateTime;
     slug: Schema.Attribute.UID<'name'> & Schema.Attribute.Required;
+    strech_of_days: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::strech-of-days.strech-of-days'
+    >;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiInsuranceInsurance extends Struct.CollectionTypeSchema {
+  collectionName: 'insurances';
+  info: {
+    description: '';
+    displayName: 'Insurance';
+    pluralName: 'insurances';
+    singularName: 'insurance';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    description: Schema.Attribute.RichText &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    images: Schema.Attribute.Media<'images' | 'files', true> &
+      Schema.Attribute.Required;
+    insurance_category: Schema.Attribute.Relation<
+      'oneToOne',
+      'api::insurance-category.insurance-category'
+    >;
+    isActive: Schema.Attribute.Boolean &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<true>;
+    locale: Schema.Attribute.String;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::insurance.insurance'
+    >;
+    name: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    price: Schema.Attribute.Decimal &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    publishedAt: Schema.Attribute.DateTime;
+    slug: Schema.Attribute.UID & Schema.Attribute.Required;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiStrechOfDaysStrechOfDays
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'streches_of_days';
+  info: {
+    description: '';
+    displayName: 'StrechOfDays';
+    pluralName: 'streches-of-days';
+    singularName: 'strech-of-days';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    code: Schema.Attribute.UID & Schema.Attribute.Required;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    insurance_category: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::insurance-category.insurance-category'
+    >;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::strech-of-days.strech-of-days'
+    > &
+      Schema.Attribute.Private;
+    maxDays: Schema.Attribute.Integer & Schema.Attribute.Required;
+    minDays: Schema.Attribute.Integer & Schema.Attribute.Required;
+    price: Schema.Attribute.Decimal & Schema.Attribute.Required;
+    publishedAt: Schema.Attribute.DateTime;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -971,6 +1079,8 @@ declare module '@strapi/strapi' {
       'admin::user': AdminUser;
       'api::home.home': ApiHomeHome;
       'api::insurance-category.insurance-category': ApiInsuranceCategoryInsuranceCategory;
+      'api::insurance.insurance': ApiInsuranceInsurance;
+      'api::strech-of-days.strech-of-days': ApiStrechOfDaysStrechOfDays;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;
       'plugin::i18n.locale': PluginI18NLocale;
