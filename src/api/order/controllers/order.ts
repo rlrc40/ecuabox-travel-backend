@@ -40,7 +40,7 @@ export default factories.createCoreController(
             },
           ],
           mode: "payment",
-          success_url: `${process.env.FRONTEND_URL}/calculate-your-insurance/step-6?session_id={CHECKOUT_SESSION_ID}`,
+          success_url: `${process.env.FRONTEND_URL}/calculate-your-insurance/step-5?session_id={CHECKOUT_SESSION_ID}`,
           cancel_url: `${process.env.FRONTEND_URL}/cancel`,
           metadata,
         });
