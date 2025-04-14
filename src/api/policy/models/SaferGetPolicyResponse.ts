@@ -1,22 +1,20 @@
-export type SaferPolicyResponse = SaferPolicy;
-
-export interface SaferPolicy {
+export type SaferGetPolicyResponse = {
   idDyn: number;
   productName: string;
   product: SaferPolicyProduct;
-}
+};
 
-export interface SaferPolicyProduct {
+interface SaferPolicyProduct {
   priceList: SaferPolicyPriceList;
 }
 
-export interface SaferPolicyPriceList {
+interface SaferPolicyPriceList {
   idDyn: number;
   name: string;
   priceListParamsList: SaferPolicyPriceListParam[];
 }
 
-export interface SaferPolicyPriceListParam {
+interface SaferPolicyPriceListParam {
   idDyn: number;
   name: string;
   paramType: string;
@@ -24,7 +22,7 @@ export interface SaferPolicyPriceListParam {
   priceListParamsValuesList: SaferPolicyPriceListValue[];
 }
 
-export interface SaferPolicyPriceListValue {
+interface SaferPolicyPriceListValue {
   idDyn: number;
   name: string;
   minRange: number;

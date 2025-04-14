@@ -12,19 +12,7 @@ module.exports = {
       const password = process.env.SAFER_PASS;
 
       const data = { username: `${username}`, password: `${password}` };
-      const options = {
-        method: "POST",
-        headers: {
-          "x-api-key": `${token}`,
-          "content-type": "application/json",
-          "Ocp-Apim-Subscription-Key": `${tokenSubscription}`,
-        },
-        data: {
-          username: `${username}`,
-          password: `${password}`,
-        },
-        baseURL,
-      };
+
       const saferResponse = await fetch(baseURL, {
         method: "POST",
         headers: {
