@@ -58,36 +58,35 @@ module.exports = {
 
       const destinyPriceListId = product.priceList.priceListParamsList.find(
         (priceList) => priceList.paramType === "ambito_cobertura"
-      )?.priceListParamsValuesList[0].idDyn;
+      )?.priceListParamsValues[0].idDyn;
 
       const durationPriceListId = product.priceList.priceListParamsList
         .find((priceList) => priceList.paramType === "duracion")
-        ?.priceListParamsValuesList.find(
-          (priceList) => priceList.maxRange <= numberOfDays
+        ?.priceListParamsValues.find(
+          (priceList) =>
+            numberOfDays >= priceList.minRange &&
+            numberOfDays <= priceList.maxRange
         )?.idDyn;
 
       const postPolicyData = {
-        params: {
-          coverageExtensions: [],
-          quotePresetList: [
-            {
-              paxNum: numberOfPax,
-              priceListParamsValues1: {
-                idDyn: destinyPriceListId,
-              },
-              priceListParamsValues2: {
-                idDyn: durationPriceListId,
-              },
-              insuredAmount: null,
+        coverageExtensions: [],
+        quotePresetList: [
+          {
+            paxNum: Number(numberOfPax),
+            priceListParamsValues1: {
+              idDyn: destinyPriceListId,
             },
-          ],
-        },
-        _id: saferGetPolicyResponse.idDyn,
+            priceListParamsValues2: {
+              idDyn: durationPriceListId,
+            },
+            insuredAmount: null,
+          },
+        ],
       };
 
-      console.log("Post Policy Data:", postPolicyData);
+      console.info("Post Policy Data:", JSON.stringify(postPolicyData));
 
-      const postPolicyBaseURL = `${process.env.SAFER_DOMAIN}/users/v5/user/auth?origin=INT`;
+      const postPolicyBaseURL = `${process.env.SAFER_DOMAIN}/policies/v5/policy/${id}/pricing?origin=SF`;
 
       const postPolicyResponse = await fetch(postPolicyBaseURL, {
         method: "POST",
@@ -95,6 +94,7 @@ module.exports = {
           "x-api-key": `${token}`,
           "content-type": "application/json",
           "Ocp-Apim-Subscription-Key": `${tokenSubscription}`,
+          Authorization: `Bearer ${tokensafer}`,
         },
         body: JSON.stringify(postPolicyData),
       });

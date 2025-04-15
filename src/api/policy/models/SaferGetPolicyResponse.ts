@@ -19,7 +19,7 @@ interface SaferPolicyPriceListParam {
   name: string;
   paramType: string;
   plan: number;
-  priceListParamsValuesList: SaferPolicyPriceListValue[];
+  priceListParamsValues: SaferPolicyPriceListValue[];
 }
 
 interface SaferPolicyPriceListValue {
