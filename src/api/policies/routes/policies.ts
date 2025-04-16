@@ -2,8 +2,8 @@ export default {
   routes: [
     {
       method: "GET",
-      path: "/policy",
-      handler: "policy.getPolicy",
+      path: "/policies",
+      handler: "policies.getPolicy",
       config: {
         policies: [],
         middlewares: [],

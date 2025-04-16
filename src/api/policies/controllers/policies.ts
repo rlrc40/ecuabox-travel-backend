@@ -25,7 +25,7 @@ export default {
 
     try {
       const policy = await strapi
-        .service("api::policy.policy")
+        .service("api::policies.policies")
         .getPolicy({ id: AM_RECEPTIVO_AMURA_21_ID, ...params });
 
       ctx.body = {
