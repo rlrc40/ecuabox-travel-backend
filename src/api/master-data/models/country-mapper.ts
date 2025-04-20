@@ -11,6 +11,9 @@ export function mapSaferToCountry(saferCountry: SaferCountry): Country {
     translations: Object.fromEntries(
       saferCountry.translationsList.map((t) => [t.language.isoCode2, t.name])
     ),
-    provinces: saferCountry.provinceList.map((p) => p.name),
+    provinces: saferCountry.provinceList.map((p) => ({
+      id: p.idDyn,
+      name: p.name,
+    })),
   });
 }

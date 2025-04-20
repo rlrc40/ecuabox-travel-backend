@@ -5,7 +5,7 @@ export class Country {
   iso3: string;
   capital: string;
   translations: Record<string, string>;
-  provinces: string[];
+  provinces: { id: number; name: string }[];
 
   constructor(params: {
     id: number;
@@ -14,7 +14,10 @@ export class Country {
     iso3: string;
     capital: string;
     translations: Record<string, string>;
-    provinces: string[];
+    provinces: {
+      id: number;
+      name: string;
+    }[];
   }) {
     this.id = params.id;
     this.name = params.name;
@@ -27,9 +30,5 @@ export class Country {
 
   getTranslation(lang: string): string {
     return this.translations[lang] || this.name;
-  }
-
-  hasProvince(provinceName: string): boolean {
-    return this.provinces.includes(provinceName);
   }
 }
