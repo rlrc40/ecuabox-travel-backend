@@ -2,7 +2,7 @@ export default {
   routes: [
     {
       method: "POST",
-      path: "/insurances",
+      path: "/insurances/new",
       handler: "insurances.create",
       config: {
         policies: [],

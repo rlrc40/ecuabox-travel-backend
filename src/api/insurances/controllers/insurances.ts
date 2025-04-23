@@ -1,6 +1,69 @@
+interface Policy {
+  idDyn: number;
+  policyNumber: string;
+  product: {
+    idDyn: number;
+    productName: string;
+  };
+}
+
+interface Country {
+  idDyn: number;
+  name: string;
+  isoCode2?: string;
+  isoCode3?: string;
+}
+
+interface AddressInfo {
+  commercialAddress?: string;
+  commercialPostalCode?: string;
+  commercialCountry?: Country;
+  commercialProvince?: {
+    idDyn: number;
+    name: string;
+  };
+}
+
+interface ContactInfo {
+  phoneNumber?: string;
+  web?: null | string;
+  email?: string;
+}
+
+interface Insured {
+  id?: null | number;
+  version?: null | number;
+  name?: string;
+  surname?: string;
+  treatment?: string;
+  documentType?: string;
+  documentNumber?: string;
+  birthDate?: string;
+  addressInfoList: AddressInfo[];
+  contactInfoList: ContactInfo[];
+}
+
+export interface InsuranceInsured {
+  isMainInsured: boolean;
+  insured: Insured;
+}
+
+interface QuotePreset {
+  paxNum: number;
+  basePrices: { idDyn: number };
+  priceListParamsValues1: { idDyn: number };
+  priceListParamsValues2: { idDyn: number };
+  insuredAmount: number;
+  countryDestiny: Country;
+  countryOrigin: Country;
+}
+
 interface CreateInsuranceParams {
-  numberOfPax: number;
-  numberOfDays: number;
+  unsuscribeDate?: string;
+  effectDate?: string;
+  policy?: Policy;
+  quotePresetList?: QuotePreset[];
+  insuranceInsuredList?: InsuranceInsured[];
 }
 
 interface GetInsuranceReportParams {
@@ -11,16 +74,14 @@ const AM_RECEPTIVO_AMURA_21_ID = 24919;
 
 export default {
   async create(ctx) {
-    const params = ctx.request.query as CreateInsuranceParams;
+    const body = ctx.request.body as CreateInsuranceParams;
 
     try {
       const insurance = await strapi
         .service("api::insurances.insurances")
-        .getInsurance({ id: AM_RECEPTIVO_AMURA_21_ID, ...params });
+        .create(body);
 
-      ctx.body = {
-        insurance,
-      };
+      ctx.body = insurance;
     } catch (err) {
       console.error("Error creating insurance:", err);
 

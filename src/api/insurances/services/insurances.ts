@@ -72,7 +72,6 @@ interface CreateInsuranceParams {
   effectDate: string;
   policy: Policy;
   quotePresetList: QuotePreset[];
-  salePoint: SalePoint;
   insuranceInsuredList: InsuranceInsured[];
 }
 
@@ -89,6 +88,13 @@ module.exports = {
 
       console.log("Create Insureance API Base URL:", createApiBaseURL);
 
+      console.log("Insurance request", {
+        ...createInsuranceParams,
+        salePoint: {
+          idDyn: 18476,
+        },
+      });
+
       const createResponse = await fetch(createApiBaseURL, {
         method: "POST",
         headers: {
@@ -97,15 +103,51 @@ module.exports = {
           "Ocp-Apim-Subscription-Key": `${tokenSubscription}`,
           Authorization: `Bearer ${tokensafer}`,
         },
-        body: JSON.stringify(createInsuranceParams),
+        body: JSON.stringify({
+          ...createInsuranceParams,
+          salePoint: {
+            idDyn: 18476,
+          },
+        }),
       });
 
-      const saferCreateInsuranceResponse = await createResponse.json();
+      const saferCreateInsuranceResponse: any = await createResponse.json();
 
       console.log(
         "Safer Create Insurance Response:",
         saferCreateInsuranceResponse
       );
+
+      const createReportApiBaseURL = `${process.env.SAFER_DOMAIN}/reports/v5/insurance/${saferCreateInsuranceResponse.id}?origin=SF&groupal=false&pvp=false&exc_generalConditions=true&exc_ipid=false`;
+
+      const createReportResponse = await fetch(createReportApiBaseURL, {
+        method: "GET",
+        headers: {
+          "x-api-key": `${token}`,
+          "content-type": "application/json",
+          "Ocp-Apim-Subscription-Key": `${tokenSubscription}`,
+          Authorization: `Bearer ${tokensafer}`,
+        },
+      });
+
+      const saferGetPolicyReportResponse = await createReportResponse.json();
+
+      const deleteResponse = await fetch(
+        `${process.env.SAFER_DOMAIN}/insurances/v5/insurance/${saferCreateInsuranceResponse.id}?origin=SF`,
+        {
+          method: "DELETE",
+          headers: {
+            "x-api-key": `${token}`,
+            "content-type": "application/json",
+            "Ocp-Apim-Subscription-Key": `${tokenSubscription}`,
+            Authorization: `Bearer ${tokensafer}`,
+          },
+        }
+      );
+
+      console.log("Delete Insurance Response:", deleteResponse);
+
+      return saferGetPolicyReportResponse;
     } catch (error) {
       console.error("Error fetching policy from Safer:", error);
 

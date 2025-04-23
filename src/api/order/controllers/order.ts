@@ -14,7 +14,6 @@ export default factories.createCoreController(
         amount = 50,
         currency = "eur",
         concept,
-        travelers,
         metadata,
       } = ctx.request.body;
 
@@ -22,7 +21,6 @@ export default factories.createCoreController(
         amount,
         currency,
         concept,
-        travelers,
         metadata,
       });
 
@@ -58,7 +56,7 @@ export default factories.createCoreController(
               amount,
               currency,
               concept,
-              metadata: { ...metadata, travelers },
+              metadata,
             },
           },
         });

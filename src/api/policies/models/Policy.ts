@@ -14,8 +14,8 @@ export class Policy {
   basePrices: { idDyn: number };
 
   constructor(params: SaferPostPolicyResponse) {
-    this.id = params.idDyn;
-    this.name = params.policy.product.productName;
+    this.id = params.policy.idDyn;
+    this.name = params.policy.policyNumber;
     this.productId = params.policy.product.idDyn;
     this.productName = params.policy.product.productName;
     this.netPremiumAmount = params.netPremiumAmount;
@@ -24,6 +24,6 @@ export class Policy {
     this.retailPriceAmount = params.retailPriceAmount;
     this.priceListParamsValues1 = params.priceListParamsValues1.idDyn;
     this.priceListParamsValues2 = params.priceListParamsValues2.idDyn;
-    this.basePrices = params.priceListParamsValues1;
+    this.basePrices = params.basePrices;
   }
 }

@@ -1,4 +1,5 @@
 export type SaferPostPolicyResponse = {
+  basePrices: { idDyn: number };
   isFlatRate: boolean;
   isPaymentLetter: boolean;
   netPremiumAmount: number; // The base insurance premium – the cost of the insurance coverage excluding commissions, fees, or taxes.
