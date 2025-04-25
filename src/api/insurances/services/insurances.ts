@@ -88,12 +88,15 @@ module.exports = {
 
       console.log("Create Insureance API Base URL:", createApiBaseURL);
 
-      console.log("Insurance request", {
-        ...createInsuranceParams,
-        salePoint: {
-          idDyn: 18476,
-        },
-      });
+      console.log(
+        "Insurance request",
+        JSON.stringify({
+          ...createInsuranceParams,
+          salePoint: {
+            idDyn: 18476,
+          },
+        })
+      );
 
       const createResponse = await fetch(createApiBaseURL, {
         method: "POST",
@@ -118,6 +121,16 @@ module.exports = {
         saferCreateInsuranceResponse
       );
 
+      if (saferCreateInsuranceResponse.error) {
+        console.error(
+          "Error creating insurance in Safer:",
+          saferCreateInsuranceResponse
+        );
+        throw new Error(
+          `Error creating insurance in Safer: ${saferCreateInsuranceResponse.error}`
+        );
+      }
+
       const createReportApiBaseURL = `${process.env.SAFER_DOMAIN}/reports/v5/insurance/${saferCreateInsuranceResponse.id}?origin=SF&groupal=false&pvp=false&exc_generalConditions=true&exc_ipid=false`;
 
       const createReportResponse = await fetch(createReportApiBaseURL, {
@@ -131,6 +144,13 @@ module.exports = {
       });
 
       const saferGetPolicyReportResponse = await createReportResponse.json();
+
+      // await strapi.plugins["email"].services.email.send({
+      //   to: "rlrc40@gmail.com",
+      //   subject: "The Strapi Email feature worked successfully",
+      //   text: "Hello world!",
+      //   html: "Hello world!",
+      // });
 
       const deleteResponse = await fetch(
         `${process.env.SAFER_DOMAIN}/insurances/v5/insurance/${saferCreateInsuranceResponse.id}?origin=SF`,
