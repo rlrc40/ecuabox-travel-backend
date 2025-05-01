@@ -565,6 +565,67 @@ export interface ApiOrderOrder extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiStepStep extends Struct.CollectionTypeSchema {
+  collectionName: 'steps';
+  info: {
+    description: '';
+    displayName: 'Step';
+    pluralName: 'steps';
+    singularName: 'step';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
+  attributes: {
+    content: Schema.Attribute.RichText &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    icon: Schema.Attribute.Enumeration<
+      ['calendar', 'location', 'summary', 'personal', 'payment', 'confirmation']
+    > &
+      Schema.Attribute.Required;
+    key: Schema.Attribute.Integer &
+      Schema.Attribute.Required &
+      Schema.Attribute.Unique &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      >;
+    locale: Schema.Attribute.String;
+    localizations: Schema.Attribute.Relation<'oneToMany', 'api::step.step'>;
+    publishedAt: Schema.Attribute.DateTime;
+    subtitle: Schema.Attribute.Text &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    title: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiStrechOfDaysStrechOfDays
   extends Struct.CollectionTypeSchema {
   collectionName: 'streches_of_days';
@@ -1115,6 +1176,7 @@ declare module '@strapi/strapi' {
       'api::insurance-category.insurance-category': ApiInsuranceCategoryInsuranceCategory;
       'api::insurance.insurance': ApiInsuranceInsurance;
       'api::order.order': ApiOrderOrder;
+      'api::step.step': ApiStepStep;
       'api::strech-of-days.strech-of-days': ApiStrechOfDaysStrechOfDays;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;

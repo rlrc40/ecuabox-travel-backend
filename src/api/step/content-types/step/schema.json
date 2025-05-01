@@ -1,0 +1,63 @@
+{
+  "kind": "collectionType",
+  "collectionName": "steps",
+  "info": {
+    "singularName": "step",
+    "pluralName": "steps",
+    "displayName": "Step",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {
+    "i18n": {
+      "localized": true
+    }
+  },
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "subtitle": {
+      "type": "text",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "key": {
+      "type": "integer",
+      "unique": true,
+      "required": true,
+      "min": 0
+    },
+    "content": {
+      "type": "richtext",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    },
+    "icon": {
+      "type": "enumeration",
+      "enum": [
+        "calendar",
+        "location",
+        "summary",
+        "personal",
+        "payment",
+        "confirmation"
+      ],
+      "required": true
+    }
+  }
+}
