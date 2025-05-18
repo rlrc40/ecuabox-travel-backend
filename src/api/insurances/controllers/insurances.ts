@@ -70,8 +70,6 @@ interface GetInsuranceReportParams {
   id: number;
 }
 
-const AM_RECEPTIVO_AMURA_21_ID = 24919;
-
 export default {
   async create(ctx) {
     const body = ctx.request.body as CreateInsuranceParams;

@@ -5,24 +5,16 @@ const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
  */
 
 import { factories } from "@strapi/strapi";
+import NewOrder from "../models/new-order";
+import Order from "../models/order";
 
 export default factories.createCoreController(
   "api::order.order",
   ({ strapi }) => ({
     async create(ctx) {
-      const {
-        amount = 50,
-        currency = "eur",
-        concept,
-        metadata,
-      } = ctx.request.body;
+      const newOrder = ctx.request.body as NewOrder;
 
-      strapi.log.info("Received request to create order", {
-        amount,
-        currency,
-        concept,
-        metadata,
-      });
+      strapi.log.info("Received request to create order", newOrder);
 
       try {
         const session = await stripe.checkout.sessions.create({
@@ -30,11 +22,11 @@ export default factories.createCoreController(
           line_items: [
             {
               price_data: {
-                currency,
+                currency: newOrder.currency,
                 product_data: {
-                  name: concept,
+                  name: newOrder.concept,
                 },
-                unit_amount: amount,
+                unit_amount: newOrder.amount,
               },
               quantity: 1,
             },
@@ -42,23 +34,25 @@ export default factories.createCoreController(
           mode: "payment",
           success_url: `${process.env.FRONTEND_URL}/calculate-your-insurance/step-5?session_id={CHECKOUT_SESSION_ID}`,
           cancel_url: `${process.env.FRONTEND_URL}/cancel`,
-          metadata,
+          metadata: newOrder.metadata,
         });
 
         strapi.log.info("Stripe session created successfully", {
           sessionId: session.id,
         });
 
-        await strapi.service("api::order.order").create({
+        const order: Order = {
+          stripeId: session.id,
+          paymentStatus: "pending",
           data: {
-            stripeId: session.id,
-            data: {
-              amount,
-              currency,
-              concept,
-              metadata,
-            },
+            ...newOrder,
           },
+        };
+
+        console.log("New order:", order);
+
+        await strapi.service("api::order.order").create({
+          data: order,
         });
 
         strapi.log.info("Order saved to database", { stripeId: session.id });
