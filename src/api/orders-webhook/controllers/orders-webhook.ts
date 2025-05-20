@@ -1,3 +1,5 @@
+import Order from "../../order/models/order";
+
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 export default {
@@ -21,14 +23,14 @@ export default {
           signature,
           process.env.STRIPE_WEBHOOK_SECRET
         );
-        console.log(`🔔  Webhook signature verified.`, event);
+        console.log(`🔔  Webhook event data: ${event.data.object.id}`);
       } catch (err) {
         console.log(`⚠️  Webhook signature verification failed.`, err);
         return ctx.badRequest(null, err);
       }
-      // Extract the object from the event.
-      data = event.data;
+
       eventType = event.type;
+      data = event.data;
     } else {
       // Webhook signing is recommended, but if the secret is not configured in `config.js`,
       // retrieve the event data directly from the request body.
@@ -38,6 +40,38 @@ export default {
 
     if (eventType === "checkout.session.completed") {
       console.log(`🔔  Payment received!`);
+
+      const stripeId = data.object.id;
+      console.log(`🔔  Webhook event data session id: ${stripeId}`);
+
+      try {
+        const sessionOrder: Order = await strapi.db
+          .query("api::order.order")
+          .findOne({
+            where: {
+              stripeId,
+            },
+          });
+
+        if (!sessionOrder) {
+          return ctx.badRequest("Order not found");
+        }
+
+        console.log(`🔔  Order found: `, sessionOrder);
+
+        const updatedOrder = await strapi.db.query("api::order.order").update({
+          where: { stripeId },
+          data: {
+            ...sessionOrder,
+            paymentStatus: "paid",
+          },
+        });
+
+        console.log(`🔔  Order updated: ${updatedOrder.id}`);
+      } catch (err) {
+        console.log(`⚠️  Error updating order: ${err}`);
+        return ctx.badRequest("Error updating order", err);
+      }
     }
 
     ctx.send({});
