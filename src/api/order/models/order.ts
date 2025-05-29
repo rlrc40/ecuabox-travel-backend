@@ -3,3 +3,7 @@ export default interface Order {
   paymentStatus: "pending" | "paid" | "failed";
   data: object;
 }
+
+export interface StrapiOrder extends Order {
+  documentId: string;
+}

@@ -1,4 +1,4 @@
-import Order from "../../order/models/order";
+import { StrapiOrder } from "../../order/models/order";
 
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
@@ -10,15 +10,15 @@ export default {
     if (process.env.STRIPE_WEBHOOK_SECRET) {
       // Retrieve the event by verifying the signature using the raw body and secret.
       const signature = ctx.request.headers["stripe-signature"];
+      const unparsedBody = ctx.request.body[Symbol.for("unparsedBody")];
 
       let event;
 
       console.log(`🔔  Webhook received with signature: ${signature}`);
-      console.log(ctx.request);
 
       try {
         event = stripe.webhooks.constructEvent(
-          ctx.request.rawBody,
+          unparsedBody,
           signature,
           process.env.STRIPE_WEBHOOK_SECRET
         );
@@ -44,7 +44,7 @@ export default {
       console.log(`🔔  Webhook event data session id: ${stripeId}`);
 
       try {
-        const sessionOrder: Order = await strapi.db
+        const sessionOrder: StrapiOrder = await strapi.db
           .query("api::order.order")
           .findOne({
             where: {
@@ -58,12 +58,12 @@ export default {
 
         console.log(`🔔  Order found: `, sessionOrder);
 
-        const updatedOrder = await strapi.db.query("api::order.order").update({
-          where: { stripeId },
+        const updatedOrder = await strapi.documents("api::order.order").update({
+          documentId: sessionOrder.documentId,
           data: {
-            ...sessionOrder,
             paymentStatus: "paid",
           },
+          status: "published",
         });
 
         console.log(`🔔  Order updated: ${updatedOrder.id}`);
