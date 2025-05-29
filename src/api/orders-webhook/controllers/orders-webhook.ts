@@ -9,7 +9,6 @@ export default {
     // Check if webhook signing is configured.
     if (process.env.STRIPE_WEBHOOK_SECRET) {
       // Retrieve the event by verifying the signature using the raw body and secret.
-      const rawBody = ctx.request.body[Symbol.for("unparsedBody")];
       const signature = ctx.request.headers["stripe-signature"];
 
       let event;
@@ -19,7 +18,7 @@ export default {
 
       try {
         event = stripe.webhooks.constructEvent(
-          rawBody,
+          ctx.request.rawBody,
           signature,
           process.env.STRIPE_WEBHOOK_SECRET
         );
